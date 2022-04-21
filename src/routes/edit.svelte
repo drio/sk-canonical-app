@@ -80,14 +80,14 @@
   });
 </script>
 
+{#if editItem}
+  <p class="title">(Edit item)</p>
+{:else if newItem}
+  <p class="title">(New item)</p>
+{/if}
+
 <a href="/"> 🔙 </a>
 {#if itemFound || newItem}
-  {#if editItem}
-    <h3>Edit item</h3>
-  {:else if newItem}
-    <h3>New item</h3>
-  {/if}
-
   <div class="container">
     <label
       >Name:

@@ -47,7 +47,7 @@
   });
 </script>
 
-<h3>List of items</h3>
+<p class="title">(List of items)</p>
 
 <div>
   <button on:click={() => window.location.replace("/edit?id=0")}>new</button>
@@ -75,7 +75,7 @@
   }
 
   ul {
-    padding: 10px 20px 10px 20px;
+    padding: 10px 10px 10px 20px;
   }
 
   button {

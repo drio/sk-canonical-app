@@ -1,3 +1,10 @@
 :root {
   font-family: -apple-system, sans-serif;
 }
+
+p.title {
+  text-align: center;
+  font-size: 1rem;
+  color: lightpink;
+}
+

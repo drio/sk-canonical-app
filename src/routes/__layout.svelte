@@ -6,17 +6,20 @@
 </script>
 
 <main>
-  <h1>The canonical app</h1>
+  <p>The canonical app</p>
   <slot />
 </main>
 
 <footer />
 
 <style>
-  h1 {
-    margin: 0;
+  p {
+    margin: 10px 0 0 0;
     text-align: center;
+    font-size: 1.2rem;
+    color: grey;
   }
+
   main {
     flex: 1;
     display: flex;
@@ -26,7 +29,7 @@
     max-width: 1024px;
     margin: 0 auto;
     box-sizing: border-box;
-    padding: 0 5rem 0 5rem;
+    padding: 0 2rem 0 2rem;
   }
 
   .no-scroll {
