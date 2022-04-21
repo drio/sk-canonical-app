@@ -18,7 +18,7 @@ export function initStorage() {
 	}
 }
 
-const save = (newItems: Item[]) => {
+	const save = (newItems: Item[]) => {
 	items = [...newItems];
 	window.localStorage.setItem(keyName, JSON.stringify(items))
 }
