@@ -47,7 +47,7 @@
   });
 </script>
 
-<h1>Welcome to this app</h1>
+<h3>List of items</h3>
 
 <div>
   <button on:click={() => window.location.replace("/edit?id=0")}>new</button>
@@ -68,3 +68,17 @@
 </div>
 
 <button on:click={handleClean}> Clean </button>
+
+<style>
+  div {
+    padding: 10px 0 10px 0;
+  }
+
+  ul {
+    padding: 10px 20px 10px 20px;
+  }
+
+  button {
+    width: fit-content;
+  }
+</style>

@@ -116,7 +116,8 @@
 
 <style>
   a {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    text-decoration: none;
   }
 
   .container {
@@ -140,5 +141,9 @@
   ul {
     padding: 0 0 0 15px;
     margin: 5px 0 5px 0px;
+  }
+
+  button {
+    width: fit-content;
   }
 </style>
