@@ -50,7 +50,7 @@
 <h1>Welcome to this app</h1>
 
 <div>
-  <button on:click={() => window.location.replace("/new")}>new</button>
+  <button on:click={() => window.location.replace("/edit?id=0")}>new</button>
   <button on:click={handleRandomAdd}> Random Add </button>
   <ul>
     {#each items as { id, name, age }}
@@ -59,7 +59,7 @@
           {id}
           {name}
           {age}
-          <a href="#">edit</a>
+          <a href="/edit?id={id}">edit</a>
           <a href="#" on:click={() => handleDelete(id)}>delete</a>
         </p>
       </li>
