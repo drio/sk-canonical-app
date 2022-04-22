@@ -31,8 +31,4 @@
     box-sizing: border-box;
     padding: 0 2rem 0 2rem;
   }
-
-  .no-scroll {
-    overflow: hidden;
-  }
 </style>
