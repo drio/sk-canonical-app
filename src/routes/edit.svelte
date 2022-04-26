@@ -1,12 +1,7 @@
 <script lang="ts">
-  import type { Item } from "$lib/storage";
-  import {
-    initStorage,
-    getItems,
-    getItem,
-    addItem,
-    updateItem,
-  } from "$lib/storage";
+  import type { Item } from "$lib/api.ts";
+  import { getItem, addItem, deleteItem } from "$lib/api.ts";
+
   import { onMount } from "svelte";
   import { page } from "$app/stores";
   import { fade } from "svelte/transition";
@@ -28,16 +23,12 @@
   function persistItem() {
     if (newItem) {
       addItem({
-        id: Math.random().toString(16).slice(2),
-        created_at: new Date(),
         name,
         age: parseInt(age, 0),
       });
     } else {
       if (id) {
         updateItem({
-          id,
-          created_at: new Date(),
           name,
           age: parseInt(age, 0),
         });
@@ -63,17 +54,9 @@
     haveErrors = errors.length > 0;
   }
 
-  onMount(() => {
-    initStorage();
-    if (id && id !== "0") {
-      const r = getItem(id);
-      if (r.length === 1) {
-        name = r[0].name;
-        age = "" + r[0].age;
-      }
-    }
-    ready = true;
-  });
+  function loadData() {
+    // TODO: we have promisses
+  }
 
   let errors: string[] = [];
   let name: string = "";
@@ -82,10 +65,19 @@
   let ready = false;
   let haveErrors = false;
 
+  let editItem = false;
+  let newItem = true;
+  let itemFound = true;
+  let what = "edit";
+  ready = true;
+  //let promise = loadData();
+
+  /*
   $: editItem = id && id !== "0";
   $: newItem = id && id === "0";
-  $: itemFound = id && getItem(id).length === 1;
+  $: itemFound = id !== "0" && getItem(id).length === 1;
   $: what = newItem ? "New" : "Edit";
+  */
 </script>
 
 {#if ready}

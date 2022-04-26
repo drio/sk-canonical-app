@@ -7,6 +7,7 @@
 
   let hideContainer = false;
   let error = "";
+  let loading = true;
 
   function randomName() {
     const r = "" + Math.random() * firstNames.length;
@@ -15,47 +16,53 @@
 
   const randomAge = () => parseInt("" + Math.random() * 100, 0);
 
+  function loadData() {
+    loading = true;
+    return getItems().then((d) => {
+      loading = false;
+      return d;
+    });
+  }
+
   async function handleRandomAdd() {
     const item = {
       name: randomName(),
       age: randomAge(),
     };
-    addItem(item).then(() => (promise = getItems()));
+    addItem(item).then(() => (promise = loadData()));
   }
 
   async function handleDelete(id: number) {
-    deleteItem(id).then(() => (promise = getItems()));
+    deleteItem(id).then(() => (promise = loadData()));
   }
 
-  let promise = getItems();
+  let promise = loadData();
 </script>
 
 <p class="title">(List of items)</p>
 <div class="buttons">
   <button on:click={() => window.location.replace("/edit?id=0")}>new</button>
   <button on:click={handleRandomAdd}> Random Add </button>
+  <span style:visibility={loading ? "visible" : "hidden"}> Loading ... </span>
 </div>
 
 <div class="list-main-container" class:hide-container={hideContainer}>
   {#await promise then data}
     <div>
       <div>
-        {#each data.items as { id, name, age }, idx}
-          <div
-            class="entry"
-            in:fade={{ duration: 400 }}
-            out:fade={{ duration: 400 }}
-          >
+        {#each data.items as item (item)}
+          <div class="entry">
             <div class="entry-data">
-              <span class="id">{id}</span>
-              <span class="name">{name}</span>
-              <span class="age">{age}</span>
+              <span class="id">{item.id}</span>
+              <span class="name">{item.name}</span>
+              <span class="age">{item.age}</span>
             </div>
             <div class="entry-links">
-              <a href="/edit?id={id}" on:click={() => (hideContainer = true)}
-                >edit</a
+              <a
+                href="/edit?id={item.id}"
+                on:click={() => (hideContainer = true)}>edit</a
               >
-              <a href="#" on:click={() => handleDelete(id)}>delete</a>
+              <a href="#" on:click={() => handleDelete(item.id)}>delete</a>
             </div>
           </div>
         {/each}

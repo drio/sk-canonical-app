@@ -11,6 +11,10 @@ function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export async function getItem(id: number) {
+  return delay(300).then(() => fetch(`${url}/v1/items/${id}`));
+}
+
 export async function getItems() {
   const p = delay(300).then(() => fetch(`${url}/v1/items`));
   return p
@@ -23,7 +27,7 @@ export async function getItems() {
 }
 
 export async function addItem(item: Item) {
-  fetch(`${url}/v1/items`, {
+  return fetch(`${url}/v1/items`, {
     method: "POST",
     body: JSON.stringify(item),
     headers: new Headers({
@@ -33,7 +37,7 @@ export async function addItem(item: Item) {
 }
 
 export async function deleteItem(id: number) {
-  fetch(`${url}/v1/items/${id}`, {
+  return fetch(`${url}/v1/items/${id}`, {
     method: "DELETE",
     headers: new Headers({
       "Content-Type": "application/json; charset=UTF-8",
