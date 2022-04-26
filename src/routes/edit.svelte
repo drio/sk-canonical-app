@@ -46,29 +46,22 @@
   }
 
   function handleAdd() {
-    errors = [];
-
-    let r = !errorStuff["name"].logic(name);
-    if (r) errors.push(errorStuff["name"].msg);
-
-    r = !errorStuff["age"].logic(age);
-    if (r) errors.push(errorStuff["age"].msg);
-
     if (errors.length === 0) {
       persistItem();
       window.location.replace("/");
     }
   }
 
-  let errors: string[] = [];
-  let name: string = "";
-  let age: string = "";
-  let id = $page.url.searchParams.get("id");
-  let ready = false;
+  function inputChange() {
+    errors = [];
+    let r = !errorStuff["name"].logic(name);
+    if (r) errors.push(errorStuff["name"].msg);
 
-  $: editItem = id && id !== "0";
-  $: newItem = id && id === "0";
-  $: itemFound = id && getItem(id).length === 1;
+    r = !errorStuff["age"].logic(age);
+    if (r) errors.push(errorStuff["age"].msg);
+
+    haveErrors = errors.length > 0;
+  }
 
   onMount(() => {
     initStorage();
@@ -81,40 +74,48 @@
     }
     ready = true;
   });
+
+  let errors: string[] = [];
+  let name: string = "";
+  let age: string = "";
+  let id = $page.url.searchParams.get("id");
+  let ready = false;
+  let haveErrors = false;
+
+  $: editItem = id && id !== "0";
+  $: newItem = id && id === "0";
+  $: itemFound = id && getItem(id).length === 1;
+  $: what = newItem ? "New" : "Edit";
 </script>
 
 {#if ready}
-  <div in:fade={{ duration: 500 }}>
-    {#if editItem}
-      <p class="title">(Edit item)</p>
-    {:else if newItem}
-      <p class="title">(New item)</p>
-    {/if}
+  <div transtion:fade={{ duration: 500 }}>
+    <p class="title">({what} item)</p>
 
     <a href="/"> 🔙 </a>
     {#if itemFound || newItem}
       <div class="container">
-        <label
-          >Name:
-          <input bind:value={name} />
-        </label>
-        <label
-          >Age:
-          <input bind:value={age} />
-        </label>
+        <label>Name: </label>
+        <input bind:value={name} on:input={inputChange} />
+        <label>Age:</label>
+        <input bind:value={age} on:input={inputChange} />
       </div>
       <br />
-      {#if errors.length > 0}
-        <div class="error" transition:fade={{ duration: 500 }}>
-          Something went wrong.
+      {#if !haveErrors}
+        <button on:click={handleAdd} in:fade={{ duration: 500 }}
+          >{newItem ? "add" : "update"}</button
+        >
+      {/if}
+      {#if haveErrors}
+        <div class="error" transition:fade={{ duration: 200 }}>
+          ☝ Something went wrong.
           <ul>
             {#each errors as e}
-              <p>☝ {e}</p>
+              <p>{e}</p>
             {/each}
           </ul>
         </div>
       {/if}
-      <button on:click={handleAdd}>{newItem ? "add" : "update"}</button>
     {:else}
       <p>Item to edit not found.</p>
     {/if}
@@ -123,34 +124,31 @@
 
 <style>
   a {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-decoration: none;
   }
 
   .container {
+    display: flex;
+    flex-direction: column;
     padding: 5px 0 5px 0;
+  }
+
+  label {
+    font-size: 0.9rem;
+    padding: 5px 0 5px 0;
+  }
+
+  input {
+    width: 300px;
+    border: solid 1px lightgrey;
   }
 
   .error {
     color: tomato;
-    padding-bottom: 25px;
-    font-size: 1.2rem;
-    margin: 10px;
-    border: solid 1px tomato;
+    font-size: 1rem;
+    border: solid 0px tomato;
     width: fit-content;
-    padding: 10px;
     border-radius: 1rem;
-  }
-
-  .error p {
-    margin: 0;
-  }
-  ul {
-    padding: 0 0 0 15px;
-    margin: 5px 0 5px 0px;
-  }
-
-  button {
-    width: fit-content;
   }
 </style>

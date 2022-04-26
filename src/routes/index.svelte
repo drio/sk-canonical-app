@@ -12,6 +12,7 @@
   import { fade } from "svelte/transition";
 
   let items: Item[] = [];
+  let hideContainer = false;
 
   function randomName() {
     const r = "" + Math.random() * firstNames.length;
@@ -47,36 +48,47 @@
   });
 </script>
 
-<p class="title">(List of items)</p>
+<div class="list-main-container" class:hide-container={hideContainer}>
+  <p class="title">(List of items)</p>
 
-<div>
-  <div class="buttons">
-    <button on:click={() => window.location.replace("/edit?id=0")}>new</button>
-    <button on:click={handleRandomAdd}> Random Add </button>
-    <button on:click={handleClean}> Clean </button>
-  </div>
   <div>
-    {#each items as { id, name, age } (id)}
-      <div
-        class="entry"
-        in:fade={{ duration: 1000 }}
-        out:fade={{ duration: 1000 }}
+    <div class="buttons">
+      <button on:click={() => window.location.replace("/edit?id=0")}>new</button
       >
-        <div class="entry-data">
-          <span class="id">{id}</span>
-          <span class="name">{name}</span>
-          <span class="age">{age}</span>
+      <button on:click={handleRandomAdd}> Random Add </button>
+      <button on:click={handleClean}> Clean </button>
+    </div>
+    <div>
+      {#each items as { id, name, age }, idx}
+        <div
+          class="entry"
+          in:fade={{ duration: 1000 }}
+          out:fade={{ duration: 1000 }}
+        >
+          <div class="entry-data">
+            <span class="id">{id}</span>
+            <span class="name">{name}</span>
+            <span class="age">{age}</span>
+          </div>
+          <div class="entry-links">
+            <a href="/edit?id={id}" on:click={() => (hideContainer = true)}
+              >edit</a
+            >
+            <a href="#" on:click={() => handleDelete(id)}>delete</a>
+          </div>
         </div>
-        <div class="entry-links">
-          <a href="/edit?id={id}">edit</a>
-          <a href="#" on:click={() => handleDelete(id)}>delete</a>
-        </div>
-      </div>
-    {/each}
+      {/each}
+    </div>
   </div>
 </div>
 
 <style>
+  .hide-container {
+    position: absolute;
+    top: -1000px;
+    border: color 1px red;
+  }
+
   .buttons {
     padding-bottom: 10px;
   }
@@ -106,10 +118,5 @@
 
   .entry-links a {
     color: grey;
-  }
-
-  button {
-    width: fit-content;
-    font-size: 0.7rem;
   }
 </style>

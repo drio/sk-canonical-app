@@ -10,3 +10,8 @@ p.title {
   color: lightpink;
 }
 
+  button {
+    width: fit-content;
+    font-size: 0.7rem;
+  }
+
