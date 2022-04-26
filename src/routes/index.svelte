@@ -53,8 +53,8 @@
   <button on:click={() => window.location.replace("/edit?id=0")}>new</button>
   <button on:click={handleRandomAdd}> Random Add </button>
   <ul>
-    {#each items as { id, name, age }}
-      <li in:fade={{ duration: 2000 }}>
+    {#each items as { id, name, age } (id)}
+      <li in:fade={{ duration: 1000 }} out:fade={{duration: 1000}}>
         <p>
           {id}
           {name}
