@@ -9,6 +9,7 @@
   } from "$lib/storage";
   import { onMount } from "svelte";
   import { page } from "$app/stores";
+  import { fade } from "svelte/transition";
 
   const errorStuff = {
     name: {
@@ -23,11 +24,6 @@
       },
     },
   };
-
-  let errors: string[] = [];
-  let name: string = "";
-  let age: string = "";
-  let id = $page.url.searchParams.get("id");
 
   function persistItem() {
     if (newItem) {
@@ -64,6 +60,12 @@
     }
   }
 
+  let errors: string[] = [];
+  let name: string = "";
+  let age: string = "";
+  let id = $page.url.searchParams.get("id");
+  let ready = false;
+
   $: editItem = id && id !== "0";
   $: newItem = id && id === "0";
   $: itemFound = id && getItem(id).length === 1;
@@ -77,41 +79,46 @@
         age = "" + r[0].age;
       }
     }
+    ready = true;
   });
 </script>
 
-{#if editItem}
-  <p class="title">(Edit item)</p>
-{:else if newItem}
-  <p class="title">(New item)</p>
-{/if}
+{#if ready}
+  <div in:fade={{ duration: 500 }}>
+    {#if editItem}
+      <p class="title">(Edit item)</p>
+    {:else if newItem}
+      <p class="title">(New item)</p>
+    {/if}
 
-<a href="/"> 🔙 </a>
-{#if itemFound || newItem}
-  <div class="container">
-    <label
-      >Name:
-      <input bind:value={name} />
-    </label>
-    <label
-      >Age:
-      <input bind:value={age} />
-    </label>
+    <a href="/"> 🔙 </a>
+    {#if itemFound || newItem}
+      <div class="container">
+        <label
+          >Name:
+          <input bind:value={name} />
+        </label>
+        <label
+          >Age:
+          <input bind:value={age} />
+        </label>
+      </div>
+      <br />
+      {#if errors.length > 0}
+        <div class="error" transition:fade={{ duration: 500 }}>
+          Something went wrong.
+          <ul>
+            {#each errors as e}
+              <p>☝ {e}</p>
+            {/each}
+          </ul>
+        </div>
+      {/if}
+      <button on:click={handleAdd}>{newItem ? "add" : "update"}</button>
+    {:else}
+      <p>Item to edit not found.</p>
+    {/if}
   </div>
-  <br />
-  {#if errors.length > 0}
-    <div class="error">
-      Something went wrong.
-      <ul>
-        {#each errors as e}
-          <p>☝ {e}</p>
-        {/each}
-      </ul>
-    </div>
-  {/if}
-  <button on:click={handleAdd}>{newItem ? "add" : "update"}</button>
-{:else}
-  <p>Item to edit not found.</p>
 {/if}
 
 <style>
@@ -121,7 +128,7 @@
   }
 
   .container {
-    padding-bottom: 5px;
+    padding: 5px 0 5px 0;
   }
 
   .error {
