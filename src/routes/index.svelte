@@ -62,8 +62,8 @@
       {#each items as { id, name, age }, idx}
         <div
           class="entry"
-          in:fade={{ duration: 1000 }}
-          out:fade={{ duration: 1000 }}
+          in:fade={{ duration: 500 }}
+          out:fade={{ duration: 500 }}
         >
           <div class="entry-data">
             <span class="id">{id}</span>
