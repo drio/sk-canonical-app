@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Item } from "$lib/api.ts";
   import { simulateDelay, genRandomItem } from "$lib/utils.ts";
+  import { deleteItem, getItems } from "$lib/api.ts";
   import { itemStore } from "$lib/stores.ts";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
@@ -11,18 +12,25 @@
     goto(path);
   }
 
+  /*
   async function handleRandomAdd() {
     loading = true;
     const fx = () => itemStore.set([...$itemStore, genRandomItem()]);
     simulateDelay(fx, 100).then(() => (loading = false));
   }
+  */
 
   async function handleDelete(idToDelete) {
-    itemStore.set($itemStore.filter((i) => i.id !== idToDelete));
+    const fx = $itemStore.filter((i) => i.id !== idToDelete);
+    deleteItem(idToDelete).then(() => itemStore.set(fx));
   }
 
   let loading = false;
   let hideContainer = false;
+
+  onMount(() => {
+    getItems().then(({ items }) => itemStore.set(items));
+  });
 </script>
 
 <div class:hide-container={hideContainer}>
@@ -30,7 +38,7 @@
 
   <div class="buttons">
     <button on:click={() => hideAndGo("/edit?id=0")}>new</button>
-    <button on:click={handleRandomAdd}> Random Add </button>
+    <!--<button on:click={handleRandomAdd}> Random Add </button>-->
     <span class="loading" style:visibility={loading ? "visible" : "hidden"}>
       🐢 ...
     </span>
@@ -57,8 +65,6 @@
           </div>
         </div>
       {/each}
-    {:else}
-      <p>No items</p>
     {/if}
   </div>
 </div>

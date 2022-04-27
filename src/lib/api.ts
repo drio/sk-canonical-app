@@ -7,9 +7,12 @@ export type Item = {
   age: number;
 };
 
-/*
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function pick(item: Item) {
+  return { name: item.name, age: +item.age }
 }
 
 export async function getItem(id: number) {
@@ -30,12 +33,23 @@ export async function getItems() {
 export async function addItem(item: Item) {
   return fetch(`${url}/v1/items`, {
     method: "POST",
-    body: JSON.stringify(item),
+    body: JSON.stringify(pick(item)),
     headers: new Headers({
       "Content-Type": "application/json; charset=UTF-8",
     }),
   });
 }
+
+export async function updateItem(item: Item) {
+  return fetch(`${url}/v1/items/${item.id}`, {
+    method: "PUT",
+    body: JSON.stringify(pick(item)),
+    headers: new Headers({
+      "Content-Type": "application/json; charset=UTF-8",
+    }),
+  });
+}
+
 
 export async function deleteItem(id: number) {
   return fetch(`${url}/v1/items/${id}`, {
@@ -45,4 +59,3 @@ export async function deleteItem(id: number) {
     }),
   });
 }
-*/

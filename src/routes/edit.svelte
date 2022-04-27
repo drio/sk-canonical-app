@@ -2,6 +2,7 @@
   import type { Item } from "$lib/api.ts";
   import { simulateDelay, genEmptyItem } from "$lib/utils.ts";
   import { itemStore } from "$lib/stores.ts";
+  import { addItem, updateItem } from "$lib/api.ts";
 
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
@@ -22,13 +23,16 @@
   };
 
   function handleAdd() {
+    let p;
     if (errors.length === 0) {
       if (newItem) {
+        p = addItem(item);
         itemStore.set([...$itemStore, item]);
       } else {
         itemStore.set([...$itemStore.filter((i) => i.id !== item.id), item]);
+        p = updateItem(item);
       }
-      goto("/");
+      p.then(goto("/"));
     }
   }
 
