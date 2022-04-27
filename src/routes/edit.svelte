@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { Item } from "$lib/api.ts";
-  import { getItem, addItem, deleteItem } from "$lib/api.ts";
+  import { simulateDelay, genEmptyItem } from "$lib/utils.ts";
+  import { itemStore } from "$lib/stores.ts";
 
-  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import { fade } from "svelte/transition";
 
@@ -20,71 +21,94 @@
     },
   };
 
-  function persistItem() {
-    if (newItem) {
-      addItem({
-        name,
-        age: parseInt(age, 0),
-      });
-    } else {
-      if (id) {
-        updateItem({
-          name,
-          age: parseInt(age, 0),
-        });
-      }
-    }
-  }
-
   function handleAdd() {
     if (errors.length === 0) {
-      persistItem();
-      window.location.replace("/");
+      console.log($itemStore);
+      if (newItem) {
+        itemStore.set([...$itemStore, item]);
+      } else {
+        itemStore.set([...$itemStore.filter((i) => i.id !== item.id), item]);
+      }
+      console.log($itemStore);
+      goto("/");
     }
   }
 
   function inputChange() {
     errors = [];
-    let r = !errorStuff["name"].logic(name);
+    let r = !errorStuff["name"].logic(item.name);
     if (r) errors.push(errorStuff["name"].msg);
 
-    r = !errorStuff["age"].logic(age);
+    r = !errorStuff["age"].logic(item.age);
     if (r) errors.push(errorStuff["age"].msg);
 
     haveErrors = errors.length > 0;
   }
 
-  function loadData() {
-    // TODO: we have promisses
+  function loadItem() {
+    const id = $page.url.searchParams.get("id");
+    let p;
+    if (id && id !== "0") {
+      const getItem = () => {
+        const items = $itemStore.filter((i) => i.id == +id);
+        return items.length === 1 ? items[0] : null;
+      };
+      p = simulateDelay(getItem, 1);
+      newItem = false;
+    } else {
+      newItem = true;
+      p = simulateDelay(genEmptyItem, 1);
+    }
+
+    p.then((i) => (item = i));
   }
 
+  let item;
   let errors: string[] = [];
-  let name: string = "";
-  let age: string = "";
-  let id = $page.url.searchParams.get("id");
-  let ready = false;
-  let haveErrors = false;
+  let newItem;
+  loadItem();
 
-  let editItem = false;
-  let newItem = true;
-  let itemFound = true;
-  let what = "edit";
-  ready = true;
-  //let promise = loadData();
-
+  $: what = $page.url.searchParams.get("id") ? "New" : "Edit";
+  $: haveErrors = errors && errors.length > 0;
   /*
   $: editItem = id && id !== "0";
-  $: newItem = id && id === "0";
-  $: itemFound = id !== "0" && getItem(id).length === 1;
-  $: what = newItem ? "New" : "Edit";
+  $: itemFound = item 
   */
 </script>
 
-{#if ready}
-  <div transtion:fade={{ duration: 500 }}>
-    <p class="title">({what} item)</p>
+<p class="title">({what} item)</p>
 
+{#if item}
+  <div transtion:fade={{ duration: 1000 }}>
     <a href="/"> 🔙 </a>
+    <div class="container">
+      <label>Name: </label>
+      <input bind:value={item.name} on:input={inputChange} />
+      <label>Age:</label>
+      <input bind:value={item.age} on:input={inputChange} />
+    </div>
+
+    <br />
+
+    {#if !haveErrors}
+      <button on:click={handleAdd} in:fade={{ duration: 500 }}
+        >{newItem ? "add" : "update"}</button
+      >
+    {/if}
+    {#if haveErrors}
+      <div class="error" transition:fade={{ duration: 200 }}>
+        ☝ Something went wrong.
+        <ul>
+          {#each errors as e}
+            <p>{e}</p>
+          {/each}
+        </ul>
+      </div>
+    {/if}
+  </div>
+  <!--
+  <div transtion:fade={{ duration: 500 }}>
+
     {#if itemFound || newItem}
       <div class="container">
         <label>Name: </label>
@@ -112,6 +136,9 @@
       <p>Item to edit not found.</p>
     {/if}
   </div>
+  -->
+{:else}
+  <p>Loading ...</p>
 {/if}
 
 <style>
