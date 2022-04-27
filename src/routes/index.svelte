@@ -1,79 +1,63 @@
 <script lang="ts">
   import type { Item } from "$lib/api.ts";
-  import { getItems, addItem, deleteItem } from "$lib/api.ts";
-  import firstNames from "$lib/first-names";
+  import { simulateDelay, genRandomItem } from "$lib/utils.ts";
+  import { itemStore } from "$lib/stores.ts";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
-  let hideContainer = false;
-  let error = "";
-  let loading = true;
-
-  function randomName() {
-    const r = "" + Math.random() * firstNames.length;
-    return firstNames[parseInt(r, 0)];
-  }
-
-  const randomAge = () => parseInt("" + Math.random() * 100, 0);
-
-  function loadData() {
-    loading = true;
-    return getItems().then((d) => {
-      loading = false;
-      return d;
-    });
-  }
-
   async function handleRandomAdd() {
-    const item = {
-      name: randomName(),
-      age: randomAge(),
-    };
-    addItem(item).then(() => (promise = loadData()));
+    loading = true;
+    const fx = () => itemStore.set([...$itemStore, genRandomItem()]);
+    simulateDelay(fx).then(() => (loading = false));
   }
 
-  async function handleDelete(id: number) {
-    deleteItem(id).then(() => (promise = loadData()));
+  async function handleDelete(idToDelete) {
+    itemStore.set($itemStore.filter((i) => i.id !== idToDelete));
   }
 
-  let promise = loadData();
+  let loading = false;
 </script>
 
 <p class="title">(List of items)</p>
+
 <div class="buttons">
   <button on:click={() => window.location.replace("/edit?id=0")}>new</button>
   <button on:click={handleRandomAdd}> Random Add </button>
-  <span style:visibility={loading ? "visible" : "hidden"}> Loading ... </span>
+  <span class="loading" style:visibility={loading ? "visible" : "hidden"}>
+    🐢 ...
+  </span>
 </div>
 
-<div class="list-main-container" class:hide-container={hideContainer}>
-  {#await promise then data}
-    <div>
-      <div>
-        {#each data.items as item (item)}
-          <div class="entry">
-            <div class="entry-data">
-              <span class="id">{item.id}</span>
-              <span class="name">{item.name}</span>
-              <span class="age">{item.age}</span>
-            </div>
-            <div class="entry-links">
-              <a
-                href="/edit?id={item.id}"
-                on:click={() => (hideContainer = true)}>edit</a
-              >
-              <a href="#" on:click={() => handleDelete(item.id)}>delete</a>
-            </div>
-          </div>
-        {/each}
+<div class="list-main-container">
+  {#if $itemStore.length > 0}
+    {#each $itemStore as item (item)}
+      <div
+        class="entry"
+        in:fade={{ duration: 1000 }}
+        out:fade={{ duration: 1000 }}
+      >
+        <div class="entry-data">
+          <span class="id">{item.id}</span>
+          <span class="name">{item.name}</span>
+          <span class="age">{item.age}</span>
+        </div>
+        <div class="entry-links">
+          <a href="/edit?id={item.id}" on:click={() => (hideContainer = true)}
+            >edit</a
+          >
+          <a href="#" on:click={() => handleDelete(item.id)}>delete</a>
+        </div>
       </div>
-    </div>
-  {:catch error}
-    <p>{error.message}</p>
-  {/await}
+    {/each}
+  {:else}
+    <p>No items</p>
+  {/if}
 </div>
 
 <style>
+  .loading {
+    font-size: 1.5rem;
+  }
   .hide-container {
     position: absolute;
     top: -1000px;

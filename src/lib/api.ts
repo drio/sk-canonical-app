@@ -7,6 +7,7 @@ export type Item = {
   age: number;
 };
 
+/*
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -44,3 +45,4 @@ export async function deleteItem(id: number) {
     }),
   });
 }
+*/
