@@ -68,7 +68,7 @@
   let newItem;
   loadItem();
 
-  $: what = $page.url.searchParams.get("id") ? "New" : "Edit";
+  $: what = $page.url.searchParams.get("id") === "0" ? "New" : "Edit";
   $: haveErrors = errors && errors.length > 0;
   /*
   $: editItem = id && id !== "0";
