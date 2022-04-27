@@ -41,8 +41,8 @@
       {#each $itemStore as item (item)}
         <div
           class="entry"
-          in:fade={{ duration: 1000 }}
-          out:fade={{ duration: 1000 }}
+          in:fade={{ duration: 400 }}
+          out:fade={{ duration: 400 }}
         >
           <div class="entry-data">
             <span class="id">{item.id}</span>
@@ -50,7 +50,8 @@
             <span class="age">{item.age}</span>
           </div>
           <div class="entry-links">
-            <a href="#" on:click={() => hideAndGo(`/edit?id${item.id}`)}>edit</a
+            <a href="#" on:click={() => hideAndGo(`/edit?id=${item.id}`)}
+              >edit</a
             >
             <a href="#" on:click={() => handleDelete(item.id)}>delete</a>
           </div>
