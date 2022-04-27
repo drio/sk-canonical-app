@@ -23,13 +23,11 @@
 
   function handleAdd() {
     if (errors.length === 0) {
-      console.log($itemStore);
       if (newItem) {
         itemStore.set([...$itemStore, item]);
       } else {
         itemStore.set([...$itemStore.filter((i) => i.id !== item.id), item]);
       }
-      console.log($itemStore);
       goto("/");
     }
   }
