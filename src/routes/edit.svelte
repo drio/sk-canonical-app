@@ -70,10 +70,6 @@
 
   $: what = $page.url.searchParams.get("id") === "0" ? "New" : "Edit";
   $: haveErrors = errors && errors.length > 0;
-  /*
-  $: editItem = id && id !== "0";
-  $: itemFound = item 
-  */
 </script>
 
 <p class="title">({what} item)</p>
@@ -94,8 +90,7 @@
       <button on:click={handleAdd} in:fade={{ duration: 500 }}
         >{newItem ? "add" : "update"}</button
       >
-    {/if}
-    {#if haveErrors}
+    {:else}
       <div class="error" transition:fade={{ duration: 200 }}>
         ☝ Something went wrong.
         <ul>
@@ -106,37 +101,6 @@
       </div>
     {/if}
   </div>
-  <!--
-  <div transtion:fade={{ duration: 500 }}>
-
-    {#if itemFound || newItem}
-      <div class="container">
-        <label>Name: </label>
-        <input bind:value={name} on:input={inputChange} />
-        <label>Age:</label>
-        <input bind:value={age} on:input={inputChange} />
-      </div>
-      <br />
-      {#if !haveErrors}
-        <button on:click={handleAdd} in:fade={{ duration: 500 }}
-          >{newItem ? "add" : "update"}</button
-        >
-      {/if}
-      {#if haveErrors}
-        <div class="error" transition:fade={{ duration: 200 }}>
-          ☝ Something went wrong.
-          <ul>
-            {#each errors as e}
-              <p>{e}</p>
-            {/each}
-          </ul>
-        </div>
-      {/if}
-    {:else}
-      <p>Item to edit not found.</p>
-    {/if}
-  </div>
-  -->
 {:else}
   <p>Loading ...</p>
 {/if}
