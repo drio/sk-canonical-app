@@ -1,5 +1,15 @@
 import firstNames from "$lib/first-names";
 
+const storeMode = import.meta.env.VITE_STOREMODE;
+const Noop = new Promise<void>((r) => r());
+const DBMode = storeMode === "db"
+
+// This is an abstration so we can work against memory or the DB
+export function requestProm(fx: any) {
+  const p = DBMode ? fx() : Noop;
+  return p;
+}
+
 export function simulateDelay(fx: any, delay = 1000) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -34,27 +44,3 @@ export function genRandomItem() {
     age: randomAge(),
   }
 }
-
-/*
-export const getAll = () => simulateDelay([...items]);
-
-export const add = (i: Item) => simulateDelay(itemStore.set([...itemStore, i]));
-
-export const getOne = (id: string | null) => {
-  if (!id) return [];
-  return items.filter(i => i.id === id);
-}
-
-export const del = (id: string) => {
-  items = items.filter(i => i.id !== id)
-}
-
-export const update = (iToUpdate: Item) => {
-  items = [
-    ...items.filter(i => i.id !== iToUpdate.id),
-    iToUpdate
-  ]
-}
-*/
-
-

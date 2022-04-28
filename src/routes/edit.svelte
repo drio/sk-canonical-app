@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import type { Item } from "$lib/api.ts";
-  import { simulateDelay, genEmptyItem } from "$lib/utils.ts";
+  import { simulateDelay, genEmptyItem, requestProm } from "$lib/utils.ts";
   import { itemStore } from "$lib/stores.ts";
   import { addItem, updateItem } from "$lib/api.ts";
 
@@ -41,11 +41,11 @@
     let p;
     if (errors.length === 0) {
       if (newItem) {
-        p = addItem(item);
+        p = requestProm(() => addItem(item));
         itemStore.set([...$itemStore, item]);
       } else {
         itemStore.set([...$itemStore.filter((i) => i.id !== item.id), item]);
-        p = updateItem(item);
+        p = requestProm(() => updateItem(item));
       }
       p.then(goto(`${url}/`));
     }

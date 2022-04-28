@@ -1,21 +1,22 @@
 <script lang="ts">
   import type { Item } from "$lib/api.ts";
-  import { simulateDelay, genRandomItem } from "$lib/utils.ts";
+  import { simulateDelay, genRandomItem, requestProm } from "$lib/utils.ts";
   import { deleteItem, getItems } from "$lib/api.ts";
   import { itemStore } from "$lib/stores.ts";
   import { onMount, onDestroy } from "svelte";
   import { fade } from "svelte/transition";
   import { goto } from "$app/navigation";
 
+  const url = import.meta.env.VITE_URL;
+
   async function handleDelete(idToDelete) {
     const fx = $itemStore.filter((i) => i.id !== idToDelete);
-    deleteItem(idToDelete).then(() => itemStore.set(fx));
+    requestProm(() => deleteItem(idToDelete)).then(() => itemStore.set(fx));
   }
 
   onMount(() => {
-    getItems().then(({ items }) => itemStore.set(items));
+    requestProm(getItems).then(({ items }) => itemStore.set(items));
   });
-  const url = import.meta.env.VITE_URL;
 </script>
 
 <div class>

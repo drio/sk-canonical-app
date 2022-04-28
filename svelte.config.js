@@ -1,6 +1,9 @@
 import adapter from '@sveltejs/adapter-static';
 import preprocess from 'svelte-preprocess';
 
+const env = process.env.NODE_ENV
+console.log(env)
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
@@ -14,7 +17,7 @@ const config = {
       default: true
     },
     paths: {
-      base: "/apps/canonical"
+      base: env === "prod" ? "/apps/canonical" : "/"
     }
   }
 };
