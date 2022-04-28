@@ -15,13 +15,14 @@
   onMount(() => {
     getItems().then(({ items }) => itemStore.set(items));
   });
+  const url = import.meta.env.VITE_URL;
 </script>
 
 <div class>
   <p class="title">(List of items)</p>
 
   <div class="buttons">
-    <button on:click={() => goto("/edit?id=0")}>new</button>
+    <button on:click={() => goto(`${url}/edit?id=0`)}>new</button>
   </div>
 
   <div class="list-main-container">
@@ -34,7 +35,9 @@
             <span class="age">{item.age}</span>
           </div>
           <div class="entry-links">
-            <a href="#" on:click={() => goto(`/edit?id=${item.id}`)}>edit</a>
+            <a href="#" on:click={() => goto(`${url}/edit?id=${item.id}`)}
+              >edit</a
+            >
             <a href="#" on:click={() => handleDelete(item.id)}>delete</a>
           </div>
         </div>

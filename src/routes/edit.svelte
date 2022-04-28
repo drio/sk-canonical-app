@@ -47,7 +47,7 @@
         itemStore.set([...$itemStore.filter((i) => i.id !== item.id), item]);
         p = updateItem(item);
       }
-      p.then(goto("/"));
+      p.then(goto(`${url}/`));
     }
   }
 
@@ -76,13 +76,14 @@
 
   $: what = $page.url.searchParams.get("id") === "0" ? "New" : "Edit";
   $: haveErrors = errors && errors.length > 0;
+  const url = import.meta.env.VITE_URL;
 </script>
 
 <p class="title">({what} item)</p>
 
 {#if item}
   <div transtion:fade={{ duration: 1000 }}>
-    <a href="/"> 🔙 </a>
+    <a href={url}> 🔙 </a>
     <div class="container">
       <label>Name: </label>
       <input bind:value={item.name} on:input={inputChange} />
