@@ -1,3 +1,7 @@
+<script context="module">
+  export const prerender = false;
+</script>
+
 <script lang="ts">
   import type { Item } from "$lib/api.ts";
   import { simulateDelay, genEmptyItem } from "$lib/utils.ts";
@@ -22,6 +26,17 @@
     },
   };
 
+  function inputChange() {
+    errors = [];
+    let r = !errorStuff["name"].logic(item.name);
+    if (r) errors.push(errorStuff["name"].msg);
+
+    r = !errorStuff["age"].logic(item.age);
+    if (r) errors.push(errorStuff["age"].msg);
+
+    haveErrors = errors.length > 0;
+  }
+
   function handleAdd() {
     let p;
     if (errors.length === 0) {
@@ -36,21 +51,10 @@
     }
   }
 
-  function inputChange() {
-    errors = [];
-    let r = !errorStuff["name"].logic(item.name);
-    if (r) errors.push(errorStuff["name"].msg);
-
-    r = !errorStuff["age"].logic(item.age);
-    if (r) errors.push(errorStuff["age"].msg);
-
-    haveErrors = errors.length > 0;
-  }
-
   function loadItem() {
     const id = $page.url.searchParams.get("id");
     let p;
-    if (id && id !== "0") {
+    if (id !== "0") {
       const getItem = () => {
         const items = $itemStore.filter((i) => i.id == +id);
         return items.length === 1 ? items[0] : null;
