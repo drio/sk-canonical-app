@@ -7,4 +7,7 @@ toserver: build
 	cp -r build/* $(SERVER_STATIC_DIR)/
 
 build:
-	npm run build
+	cp .env /tmp/_tmp_env && \
+	cp .env.prod .env && \
+	npm run build && \
+	cp /tmp/_tmp_env ./.env

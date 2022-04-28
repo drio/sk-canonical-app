@@ -1,4 +1,5 @@
-const url = "http://localhost:8011";
+//const url = "http://localhost:8011";
+const url = import.meta.env.VITE_URL;
 
 export type Item = {
   id: string;
