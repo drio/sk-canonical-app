@@ -2,7 +2,7 @@ import adapter from '@sveltejs/adapter-static';
 import preprocess from 'svelte-preprocess';
 
 const env = process.env.NODE_ENV
-console.log(env)
+console.log(`ENV=${env}`)
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -17,7 +17,7 @@ const config = {
       default: true
     },
     paths: {
-      base: env === "prod" ? "/apps/canonical" : "/"
+      base: env === "production" ? "/apps/canonical" : ""
     }
   }
 };

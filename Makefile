@@ -9,5 +9,5 @@ toserver: build
 build:
 	cp .env /tmp/_tmp_env && \
 	cp .env.prod .env && \
-	npm run build && \
+	NODE_ENV=production npm run build && \
 	cp /tmp/_tmp_env ./.env

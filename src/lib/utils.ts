@@ -1,6 +1,6 @@
 import firstNames from "$lib/first-names";
 
-const storeMode = import.meta.env.VITE_STOREMODE;
+const storeMode = import.meta.env.VITE_STORE_MODE;
 const Noop = new Promise<void>((r) => r());
 const DBMode = storeMode === "db"
 
