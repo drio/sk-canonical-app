@@ -4,11 +4,9 @@ const storeMode = import.meta.env.VITE_STORE_MODE;
 const Noop = new Promise<void>((r) => r());
 const DBMode = storeMode === "db"
 
-// This is an abstration so we can work against memory or the DB
-export function requestProm(fx: any) {
-  const p = DBMode ? fx() : Noop;
-  return p;
-}
+// This is an abstration so we can work against memory when in dev mode
+// or against a real DB engine when in production
+export const requestProm = (fx: any) => DBMode ? fx() : Noop;
 
 export function simulateDelay(fx: any, delay = 1000) {
   return new Promise((resolve) => {

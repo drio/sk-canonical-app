@@ -8,6 +8,7 @@ help:
 
 ## dev: start skit in dev mode
 dev:
+	cp .env.dev ./.env
 	npm run dev -- --port 4001
 
 ## toserver: build and copy bundle to server
