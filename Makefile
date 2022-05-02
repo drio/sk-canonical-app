@@ -13,6 +13,7 @@ dev:
 ## toserver: build and copy bundle to server
 .PHONY: toserver
 toserver: build
+	rm -rf $(SERVER_STATIC_DIR)/_app/* $(SERVER_STATIC_DIR)/*
 	cp -r build/* $(SERVER_STATIC_DIR)/
 
 ## build: rebuild production bundle

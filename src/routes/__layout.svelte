@@ -6,7 +6,7 @@
 </script>
 
 <main>
-  <p>The canonical app 🎉</p>
+  <p>The canonical app</p>
   <slot />
 </main>
 
