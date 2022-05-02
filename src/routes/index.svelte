@@ -15,7 +15,9 @@
   }
 
   onMount(() => {
-    requestProm(getItems).then(({ items }) => itemStore.set(items));
+    requestProm(getItems).then((response) => {
+      itemStore.set(response && response.items ? response.items : [])
+    });
   });
 </script>
 
@@ -27,7 +29,6 @@
   </div>
 
   <div class="list-main-container">
-    {#if $itemStore.length > 0}
       {#each $itemStore as item (item)}
         <div class="entry">
           <div class="entry-data">
@@ -43,7 +44,6 @@
           </div>
         </div>
       {/each}
-    {/if}
   </div>
 </div>
 
